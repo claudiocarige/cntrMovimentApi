@@ -10,6 +10,7 @@ import com.claudiocarige.CntrMovimentApi.domain.Client;
 import com.claudiocarige.CntrMovimentApi.domain.dtos.ClientDTO;
 import com.claudiocarige.CntrMovimentApi.repositories.ClientRepository;
 import com.claudiocarige.CntrMovimentApi.services.exception.DataIntegrityViolationException;
+import com.claudiocarige.CntrMovimentApi.services.exception.NoSuchElementException;
 
 @Service
 public class ClientService {
@@ -24,7 +25,7 @@ public class ClientService {
 	
 	public Client findById(Long id) {
 		Optional<Client> client = clientRepository.findById(id);
-		return client.orElseThrow();
+		return client.orElseThrow(() -> new NoSuchElementException("Cliente não encontrado!"));
 	}
 	
 	public Client insert (ClientDTO clientDTO) {
@@ -44,11 +45,11 @@ public class ClientService {
 	
 	public void cnpjValidate(ClientDTO clientDTO) {
 		Optional<Client> client = clientRepository.findByCnpj(clientDTO.getCnpj());
-		if(client.isPresent() && client.get().getCnpj() == clientDTO.getCnpj() ) {
+		if(client.isPresent() && client.get().getCnpj().equals(clientDTO.getCnpj())) {
 			throw new DataIntegrityViolationException("CNPJ já está cadastrado no sistema");
 		}
 	}
-	
+	 
 	private Client transfClientDTO(ClientDTO clientDTO) {
 		Client client = new Client();
 		client.setId(clientDTO.getId());
