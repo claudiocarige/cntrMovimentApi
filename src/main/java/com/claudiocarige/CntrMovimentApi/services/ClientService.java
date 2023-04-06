@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.claudiocarige.CntrMovimentApi.domain.Client;
+import com.claudiocarige.CntrMovimentApi.domain.dtos.ClientDTO;
 import com.claudiocarige.CntrMovimentApi.repositories.ClientRepository;
+import com.claudiocarige.CntrMovimentApi.services.exception.DataIntegrityViolationException;
 
 @Service
 public class ClientService {
@@ -25,7 +27,35 @@ public class ClientService {
 		return client.orElseThrow();
 	}
 	
-	public Client insert (Client client) {
+	public Client insert (ClientDTO clientDTO) {
+		clientDTO.setId(null);
+		cnpjValidate(clientDTO);
+		Client newClient = transfClientDTO(clientDTO);
+		return clientRepository.save(newClient);
+	}
+	
+	
+	public String cnpjFormated(String cnpj) {
+		if (cnpj != null && !cnpj.isEmpty()) {
+			return cnpj.replaceAll("[^\\d]", "");
+		}
 		return null;
+	}
+	
+	public void cnpjValidate(ClientDTO clientDTO) {
+		Optional<Client> client = clientRepository.findByCnpj(clientDTO.getCnpj());
+		if(client.isPresent() && client.get().getCnpj() == clientDTO.getCnpj() ) {
+			throw new DataIntegrityViolationException("CNPJ já está cadastrado no sistema");
+		}
+	}
+	
+	private Client transfClientDTO(ClientDTO clientDTO) {
+		Client client = new Client();
+		client.setId(clientDTO.getId());
+		client.setName(clientDTO.getName());
+		client.setCnpj(cnpjFormated(clientDTO.getCnpj()));
+		client.setContact(clientDTO.getContact());
+		client.setEmail(clientDTO.getEmail());
+		return client;
 	}
 }
