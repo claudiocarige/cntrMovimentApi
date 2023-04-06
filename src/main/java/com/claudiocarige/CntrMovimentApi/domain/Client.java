@@ -17,15 +17,15 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "tb_client")
-public class Client implements Serializable{
+public class Client implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	private String name;
-	@Column(unique = true, length = 18)
+	@Column(unique = true, length = 14)
 	private String cnpj;
 	private String contact;
 	private String email;
