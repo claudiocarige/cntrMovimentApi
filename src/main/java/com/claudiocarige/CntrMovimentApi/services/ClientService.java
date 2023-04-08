@@ -17,44 +17,35 @@ public class ClientService {
 
 	@Autowired
 	private ClientRepository clientRepository;
-	
-	
-	public List<Client> findAll(){
+
+	public List<Client> findAll() {
 		return clientRepository.findAll();
 	}
-	
+
 	public Client findById(Long id) {
 		Optional<Client> client = clientRepository.findById(id);
 		return client.orElseThrow(() -> new NoSuchElementException("Cliente não encontrado!"));
 	}
-	
-	public Client insert (ClientDTO clientDTO) {
+
+	public Client insert(ClientDTO clientDTO) {
 		clientDTO.setId(null);
 		cnpjValidate(clientDTO);
 		Client newClient = transfClientDTO(clientDTO);
 		return clientRepository.save(newClient);
 	}
-	
-	
-	public String cnpjFormated(String cnpj) {
-		if (cnpj != null && !cnpj.isEmpty()) {
-			return cnpj.replaceAll("[^\\d]", "");
-		}
-		return null;
-	}
-	
+
 	public void cnpjValidate(ClientDTO clientDTO) {
 		Optional<Client> client = clientRepository.findByCnpj(clientDTO.getCnpj());
-		if(client.isPresent() && client.get().getCnpj().equals(clientDTO.getCnpj())) {
+		if (client.isPresent() && client.get().getCnpj().equals(clientDTO.getCnpj())) {
 			throw new DataIntegrityViolationException("CNPJ já está cadastrado no sistema");
 		}
 	}
-	 
+
 	private Client transfClientDTO(ClientDTO clientDTO) {
 		Client client = new Client();
 		client.setId(clientDTO.getId());
 		client.setName(clientDTO.getName());
-		client.setCnpj(cnpjFormated(clientDTO.getCnpj()));
+		client.setCnpj(clientDTO.getCnpj());
 		client.setContact(clientDTO.getContact());
 		client.setEmail(clientDTO.getEmail());
 		return client;

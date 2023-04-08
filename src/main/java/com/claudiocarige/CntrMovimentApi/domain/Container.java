@@ -27,6 +27,7 @@ public class Container implements Serializable{
 	private Long id;
 	@Column(unique = true, length = 11)
 	private String cntrNumber;
+	
 	@Enumerated
 	private StatusCntr statusCntr;
 	@Enumerated
@@ -84,11 +85,11 @@ public class Container implements Serializable{
 		this.typeCntr = typeCntr;
 	}
 
-	public CategoryCntr getCntrCategory() {
+	public CategoryCntr getCategoryCntr() {
 		return categoryCntr;
 	}
 
-	public void setCntrCategory(CategoryCntr categoryCntr) {
+	public void setCategoryCntr(CategoryCntr categoryCntr) {
 		this.categoryCntr = categoryCntr;
 	}
 

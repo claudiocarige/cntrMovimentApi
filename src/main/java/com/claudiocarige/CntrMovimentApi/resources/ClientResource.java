@@ -18,6 +18,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import com.claudiocarige.CntrMovimentApi.domain.Client;
 import com.claudiocarige.CntrMovimentApi.domain.dtos.ClientDTO;
 import com.claudiocarige.CntrMovimentApi.services.ClientService;
+import com.claudiocarige.CntrMovimentApi.services.exception.DataIntegrityViolationException;
 
 @RestController
 @RequestMapping(value = "/api/clients")
@@ -39,6 +40,10 @@ public class ClientResource {
 	}
 	@PostMapping
 	public ResponseEntity<ClientDTO> insert(@Valid @RequestBody ClientDTO clientDTO ){
+		clientDTO.setCnpj(clientDTO.getCnpj().replaceAll("[^\\d]", ""));
+		if(clientDTO.getCnpj().length() != 14) {
+			throw new DataIntegrityViolationException("O CNPJ deve conter 14 numeros");
+		}
 		Client client = clientService.insert(clientDTO);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/id").buildAndExpand(client.getId()).toUri();
 		return ResponseEntity.created(uri).build();
