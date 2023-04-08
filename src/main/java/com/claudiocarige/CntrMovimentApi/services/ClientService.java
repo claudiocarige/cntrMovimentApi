@@ -34,10 +34,19 @@ public class ClientService {
 		return clientRepository.save(newClient);
 	}
 
+	public Client update(Long id,ClientDTO clientDTO) {
+		clientDTO.setId(id);
+		Client client = findById(id);
+		if(!clientDTO.getCnpj().equals(client.getCnpj())) {
+			throw new DataIntegrityViolationException("O CNPJ não pode ser alterado!");
+		}
+		client = transfClientDTO(clientDTO);
+		return clientRepository.save(client);
+	}
 	public void cnpjValidate(ClientDTO clientDTO) {
 		Optional<Client> client = clientRepository.findByCnpj(clientDTO.getCnpj());
 		if (client.isPresent() && client.get().getCnpj().equals(clientDTO.getCnpj())) {
-			throw new DataIntegrityViolationException("CNPJ já está cadastrado no sistema");
+			throw new DataIntegrityViolationException("CNPJ já cadastrado no sistema");
 		}
 	}
 
@@ -50,4 +59,6 @@ public class ClientService {
 		client.setEmail(clientDTO.getEmail());
 		return client;
 	}
+
+
 }

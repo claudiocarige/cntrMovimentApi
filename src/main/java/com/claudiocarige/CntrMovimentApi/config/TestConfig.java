@@ -28,10 +28,10 @@ public class TestConfig implements CommandLineRunner{
 	@Override
 	public void run(String... args) throws Exception {
 		
-		Client client = new Client(null, "Pátio dop Porto", "00000000000000", "71000001111", "porto@gmail.com");
-		Client client01 = new Client(null, "MkMondial", "33333333333333", "71991125697", "ccarige@gmail.com");
-		Client client02 = new Client(null, "TKT", "11111111111111", "71991120000", "tkt@gmail.com");
-		Client client03 = new Client(null, "TTT", "22222222222222", "71991122222", "ttt@gmail.com");
+		Client client = new Client(null, "Pátio dop Porto", "11087702000170", "71000001111", "porto@gmail.com");
+		Client client01 = new Client(null, "MkMondial", "40989693000101", "71991125697", "ccarige@gmail.com");
+		Client client02 = new Client(null, "TKT", "14973195000160", "71991120000", "tkt@gmail.com");
+		Client client03 = new Client(null, "TTT", "78804069000165", "71991122222", "ttt@gmail.com");
 		
 		
 		Container cntr01 = new Container(null, "NTTU0000001", StatusCntr.FULL, TypeCntr.HC40, CategoryCntr.EXPORT, client01);
