@@ -40,14 +40,38 @@ public class ContainerService {
 		newCntr.setClient(client.get());
 		return cntrRepository.save(newCntr);
 	}
+	
+	public Container update(ContainerDTO cntrDTO, Long id) {
+		cntrDTO.setId(id);
+		validateCntr(cntrDTO);
+		Container oldCntr = transformDTO(cntrDTO);
+		return cntrRepository.save(oldCntr);
+	}
+	
+	public void validateCntr(ContainerDTO cntrDTO) {
+			Optional<Container> oldCntr = cntrRepository.findById(cntrDTO.getId());
+			if(!oldCntr.get().getCntrNumber().equals(cntrDTO.getCntrNumber())) {
+				throw new DataIntegrityViolationException("O número do Container não pode ser alterado!");
+			}else if(!oldCntr.get().getClient().getCnpj().equals(cntrDTO.getClient().getCnpj())) {
+				throw new DataIntegrityViolationException("O Cliente não pode ser alterado nesse endpoint!");
+			}
+	}
   
 	public void validateCntr(String cntrNumber) {
-		Optional<Container> cntr = cntrRepository.findByCntrNumber(cntrNumber);
-		if (!cntr.isEmpty() && cntr.get().getCntrNumber().equals(cntrNumber)) {
-			throw new DataIntegrityViolationException("Container já existe na base de dados!");
-		}
+			Optional<Container> cntr = cntrRepository.findByCntrNumber(cntrNumber);
+			if (!cntr.isEmpty() && cntr.get().getCntrNumber().equals(cntrNumber)) {
+				throw new DataIntegrityViolationException("Container já existe na base de dados!");
+			}
 	}
 
+	public ContainerDTO formatCntr(ContainerDTO cntrDTO) {
+		cntrDTO.setCntrNumber(cntrDTO.getCntrNumber().replaceAll("[^a-zA-Z0-9]+", ""));
+		if (!cntrDTO.getCntrNumber().matches("[A-Z]{4}[0-9]{7}")) {
+			throw new DataIntegrityViolationException("Numero do CNTR deve conter 4 letras MAIÚSCULAS e 7 Numeros!");
+		}
+		return cntrDTO;
+	}
+	 
 	public Container transformDTO(ContainerDTO cntrDTO) {
 		Container cntr = new Container();
 		cntr.setId(cntrDTO.getId());
