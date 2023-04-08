@@ -2,13 +2,13 @@ package com.claudiocarige.CntrMovimentApi.domain.enums;
 
 public enum MovimentType {
 
-	DEPARTURE(1, "DEPARTURE"), 
-	ARRIVAL(2, "ARRIVAL"),
-	GATEIN(3, "GATEIN"),
-	GATEOUT(2, "GATEOUT"),
-	REPOSITION(2, "REPOSITION"),
-	WEIGHING(2, "WEIGHING"),
-	SCANNER(2, "SCANNER");
+	DEPARTURE(0, "DEPARTURE"), 
+	ARRIVAL(1, "ARRIVAL"),
+	GATEIN(2, "GATEIN"),
+	GATEOUT(3, "GATEOUT"),
+	REPOSITION(4, "REPOSITION"),
+	WEIGHING(5, "WEIGHING"),
+	SCANNER(6, "SCANNER");
 
 	private Integer code;
 	private String description;

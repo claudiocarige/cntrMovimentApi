@@ -2,8 +2,8 @@ package com.claudiocarige.CntrMovimentApi.domain.enums;
 
 public enum TypeCntr {
 
-	HC20(1, "HC20"), 
-	HC40(2, "HC40");
+	HC20(0, "HC20"), 
+	HC40(1, "HC40");
 
 	private Integer code;
 	private String description;

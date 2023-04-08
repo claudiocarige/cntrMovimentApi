@@ -2,8 +2,8 @@ package com.claudiocarige.CntrMovimentApi.domain.enums;
 
 public enum CategoryCntr {
 
-	IMPORT(1, "IMPORT"), 
-	EXPORT(2, "EXPORT"), 
+	IMPORT(0, "IMPORT"),
+	EXPORT(1, "EXPORT"),
 	STOPPED(2, "STOPPED");
 
 	private Integer code;

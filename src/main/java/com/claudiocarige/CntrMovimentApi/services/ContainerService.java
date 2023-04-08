@@ -19,7 +19,7 @@ public class ContainerService {
 
 	@Autowired
 	private ContainerRepository cntrRepository;
-	
+
 	@Autowired
 	private ClientRepository clientRepository;
 
@@ -31,7 +31,7 @@ public class ContainerService {
 		Optional<Container> cntr = cntrRepository.findById(id);
 		return cntr.orElseThrow(() -> new NoSuchElementException("Container não encontrado!"));
 	}
- 
+
 	public Container insert(ContainerDTO cntrDTO) {
 		cntrDTO.setId(null);
 		validateCntr(cntrDTO.getCntrNumber());
@@ -40,28 +40,45 @@ public class ContainerService {
 		newCntr.setClient(client.get());
 		return cntrRepository.save(newCntr);
 	}
-	
+
 	public Container update(ContainerDTO cntrDTO, Long id) {
 		cntrDTO.setId(id);
 		validateCntr(cntrDTO);
 		Container oldCntr = transformDTO(cntrDTO);
 		return cntrRepository.save(oldCntr);
 	}
-	
-	public void validateCntr(ContainerDTO cntrDTO) {
-			Optional<Container> oldCntr = cntrRepository.findById(cntrDTO.getId());
-			if(!oldCntr.get().getCntrNumber().equals(cntrDTO.getCntrNumber())) {
-				throw new DataIntegrityViolationException("O número do Container não pode ser alterado!");
-			}else if(!oldCntr.get().getClient().getCnpj().equals(cntrDTO.getClient().getCnpj())) {
-				throw new DataIntegrityViolationException("O Cliente não pode ser alterado nesse endpoint!");
-			}
+
+	public Container updateClientCntr(Long id, ContainerDTO cntrDTO) {
+		cntrDTO.setId(id);
+		Container oldCntr = findById(cntrDTO.getId());
+		if(!cntrDTO.getCntrNumber().equals(oldCntr.getCntrNumber())) {
+			throw new DataIntegrityViolationException("O número do Container não corresponde ao ID informado!");
+		}
+		Optional<Client> oldClient = clientRepository.findByCnpj(cntrDTO.getClient().getCnpj());
+		if(oldClient.isPresent() && cntrDTO.getClient().getCnpj().equals(oldClient.get().getCnpj())) {
+			throw new DataIntegrityViolationException("Cliente já existe!");
+		}
+		Client newClient = cntrDTO.getClient();
+		newClient = clientRepository.save(newClient);
+		cntrDTO.setClient(newClient);
+		Container cntr = transformDTO(cntrDTO);
+		return cntrRepository.save(cntr);
 	}
-  
+
+	public void validateCntr(ContainerDTO cntrDTO) {
+		Optional<Container> oldCntr = cntrRepository.findById(cntrDTO.getId());
+		if (!oldCntr.get().getCntrNumber().equals(cntrDTO.getCntrNumber())) {
+			throw new DataIntegrityViolationException("O número do Container não pode ser alterado!");
+		} else if (!oldCntr.get().getClient().getCnpj().equals(cntrDTO.getClient().getCnpj())) {
+			throw new DataIntegrityViolationException("O Cliente não pode ser alterado nesse endpoint!");
+		}
+	}
+
 	public void validateCntr(String cntrNumber) {
-			Optional<Container> cntr = cntrRepository.findByCntrNumber(cntrNumber);
-			if (!cntr.isEmpty() && cntr.get().getCntrNumber().equals(cntrNumber)) {
-				throw new DataIntegrityViolationException("Container já existe na base de dados!");
-			}
+		Optional<Container> cntr = cntrRepository.findByCntrNumber(cntrNumber);
+		if (cntr.isPresent() && cntr.get().getCntrNumber().equals(cntrNumber)) {
+			throw new DataIntegrityViolationException("Container já existe na base de dados!");
+		}
 	}
 
 	public ContainerDTO formatCntr(ContainerDTO cntrDTO) {
@@ -71,7 +88,7 @@ public class ContainerService {
 		}
 		return cntrDTO;
 	}
-	 
+
 	public Container transformDTO(ContainerDTO cntrDTO) {
 		Container cntr = new Container();
 		cntr.setId(cntrDTO.getId());

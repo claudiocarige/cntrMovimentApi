@@ -2,8 +2,8 @@ package com.claudiocarige.CntrMovimentApi.domain.enums;
 
 public enum StatusCntr {
 
-	FULL(1, "CHEIO"), 
-	EMPTY(2, "VAZIO");
+	FULL(0, "CHEIO"), 
+	EMPTY(1, "VAZIO");
 
 	private Integer code;
 	private String description;

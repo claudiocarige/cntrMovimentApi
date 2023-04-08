@@ -53,4 +53,11 @@ public class ContainerResource {
 		Container cntr = cntrService.update(cntrDTO, id);
 		return ResponseEntity.ok().body(new ContainerDTO(cntr));
 	}
-}
+	
+	@PutMapping(value = "/updateclient/{id}")
+	public ResponseEntity<ContainerDTO> UpdateClient(@PathVariable Long id, @Valid @RequestBody ContainerDTO cntrDTO){
+		cntrDTO = cntrService.formatCntr(cntrDTO);
+		Container cntr = cntrService.updateClientCntr(id, cntrDTO);
+		return ResponseEntity.ok().body(new ContainerDTO(cntr));
+	}
+ }

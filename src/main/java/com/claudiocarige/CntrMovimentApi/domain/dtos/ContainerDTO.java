@@ -18,7 +18,7 @@ public class ContainerDTO implements Serializable {
 	private StatusCntr statusCntr;
 
 	private TypeCntr typeCntr;
-	
+
 	private CategoryCntr categoryCntr;
 
 	private Client client;
@@ -35,7 +35,7 @@ public class ContainerDTO implements Serializable {
 		this.categoryCntr = cntr.getCategoryCntr();
 		this.client = cntr.getClient();
 	}
-
+ 
 	public Long getId() {
 		return id;
 	}

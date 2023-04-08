@@ -5,6 +5,7 @@ import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -28,11 +29,11 @@ public class Container implements Serializable{
 	@Column(unique = true, length = 11)
 	private String cntrNumber;
 	
-	@Enumerated
+	@Enumerated(EnumType.ORDINAL)
 	private StatusCntr statusCntr;
-	@Enumerated
+	@Enumerated(EnumType.ORDINAL)
 	private TypeCntr typeCntr;
-	@Enumerated
+	@Enumerated(EnumType.ORDINAL)
 	private CategoryCntr categoryCntr;
 	
 	@ManyToOne
