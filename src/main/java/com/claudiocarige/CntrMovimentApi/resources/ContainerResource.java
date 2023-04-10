@@ -2,6 +2,7 @@ package com.claudiocarige.CntrMovimentApi.resources;
 
 import java.net.URI;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -28,15 +29,16 @@ public class ContainerResource {
 	private ContainerService cntrService;
 	
 	@GetMapping
-	public ResponseEntity<List<Container>> findAll(){
+	public ResponseEntity<List<ContainerDTO>> findAll(){
 		List<Container> list = cntrService.findAll();
-		return ResponseEntity.ok().body(list);
+		List<ContainerDTO> listDTO = list.stream().map(x -> new ContainerDTO(x)).collect(Collectors.toList());
+		return ResponseEntity.ok().body(listDTO);
 	}
 	
 	@GetMapping(value = "/{id}")
-	public ResponseEntity<Container> findById(@PathVariable Long id){
+	public ResponseEntity<ContainerDTO> findById(@PathVariable Long id){
 		Container cntr = cntrService.findById(id);
-	    return ResponseEntity.ok().body(cntr);
+	    return ResponseEntity.ok().body(new ContainerDTO(cntr));
 	}
 	
 	@PostMapping
