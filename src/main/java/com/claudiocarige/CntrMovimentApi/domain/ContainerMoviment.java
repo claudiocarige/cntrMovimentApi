@@ -16,26 +16,27 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Entity
 @Table(name = "tb_container_moviment")
-public class ContainerMoviment{
-	
+public class ContainerMoviment {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "container_id")
 	private Container container;
 	@Enumerated
 	private MovimentType movimentType;
-	
+
 	@JsonFormat(pattern = "dd/MM/yyy HH:mm:ss")
 	private LocalDateTime initialDate;
 	@JsonFormat(pattern = "dd/MM/yyy HH:mm:ss")
 	private LocalDateTime endDate;
-	
+
+
 	public ContainerMoviment() {
 	}
- 
+
 	public ContainerMoviment(Long id, Container container, MovimentType movimentType, LocalDateTime initialDate,
 			LocalDateTime endDate) {
 		super();
@@ -44,6 +45,7 @@ public class ContainerMoviment{
 		this.movimentType = movimentType;
 		this.initialDate = initialDate;
 		this.endDate = endDate;
+
 	}
 
 	public Long getId() {
@@ -86,5 +88,4 @@ public class ContainerMoviment{
 		this.endDate = endDate;
 	}
 
-	
 }

@@ -2,6 +2,7 @@ package com.claudiocarige.CntrMovimentApi.resources;
 
 import java.net.URI;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -29,15 +30,16 @@ public class ClientResource {
 	private ClientService clientService;
 
 	@GetMapping
-	public ResponseEntity<List<Client>> findall() {
+	public ResponseEntity<List<ClientDTO>> findall() {
 		List<Client> list = clientService.findAll();
-		return ResponseEntity.ok().body(list);
+		List<ClientDTO> listDTO = list.stream().map(x -> new ClientDTO(x)).collect(Collectors.toList());
+		return ResponseEntity.ok().body(listDTO);
 	}
 
 	@GetMapping(value = "/{id}")
-	public ResponseEntity<Client> findById(@PathVariable Long id) {
+	public ResponseEntity<ClientDTO> findById(@PathVariable Long id) {
 		Client client = clientService.findById(id);
-		return ResponseEntity.ok().body(client);
+		return ResponseEntity.ok().body(new ClientDTO(client));
 	}
 
 	@PostMapping
