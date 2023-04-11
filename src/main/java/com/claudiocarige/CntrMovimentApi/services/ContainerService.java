@@ -51,12 +51,8 @@ public class ContainerService {
 	public Container updateClientCntr(Long id, ContainerDTO cntrDTO) {
 		cntrDTO.setId(id);
 		Container oldCntr = findById(cntrDTO.getId());
-		if(!cntrDTO.getCntrNumber().equals(oldCntr.getCntrNumber())) {
+		if (!cntrDTO.getCntrNumber().equals(oldCntr.getCntrNumber())) {
 			throw new DataIntegrityViolationException("O número do Container não corresponde ao ID informado!");
-		}
-		Optional<Client> oldClient = clientRepository.findByCnpj(cntrDTO.getClient().getCnpj());
-		if(oldClient.isPresent() && cntrDTO.getClient().getCnpj().equals(oldClient.get().getCnpj())) {
-			throw new DataIntegrityViolationException("Cliente já existe!");
 		}
 		Client newClient = cntrDTO.getClient();
 		newClient = clientRepository.save(newClient);
