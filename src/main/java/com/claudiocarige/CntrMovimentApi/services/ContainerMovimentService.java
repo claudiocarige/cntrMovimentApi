@@ -1,6 +1,5 @@
 package com.claudiocarige.CntrMovimentApi.services;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -10,7 +9,6 @@ import org.springframework.stereotype.Service;
 import com.claudiocarige.CntrMovimentApi.domain.ContainerMoviment;
 import com.claudiocarige.CntrMovimentApi.domain.dtos.ContainerDTO;
 import com.claudiocarige.CntrMovimentApi.domain.dtos.ContainerMovimentDTO;
-import com.claudiocarige.CntrMovimentApi.domain.enums.MovimentType;
 import com.claudiocarige.CntrMovimentApi.repositories.ContainerMovimentRepository;
 import com.claudiocarige.CntrMovimentApi.services.exception.DataIntegrityViolationException;
 import com.claudiocarige.CntrMovimentApi.services.exception.NoSuchElementException;
