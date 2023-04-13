@@ -1,5 +1,6 @@
 package com.claudiocarige.CntrMovimentApi.services;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -66,6 +67,10 @@ public class ContainerService {
 		CategoryCntr category =  CategoryCntr.toEnum(id);
 		return cntrRepository.findByCategory(category);
 	}
+	
+    public List<Container> findContainersByCategoryAndDate(CategoryCntr category, LocalDateTime startDate, LocalDateTime endDate) {
+        return cntrRepository.findContainersByCategoryAndDate(category, startDate, endDate);
+    }
 
 	public void validateCntr(ContainerDTO cntrDTO) {
 		Optional<Container> oldCntr = cntrRepository.findById(cntrDTO.getId());

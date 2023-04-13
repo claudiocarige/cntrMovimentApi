@@ -3,6 +3,7 @@ package com.claudiocarige.CntrMovimentApi.domain;
 import java.time.LocalDateTime;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -25,7 +26,7 @@ public class ContainerMoviment {
 	@ManyToOne
 	@JoinColumn(name = "container_id")
 	private Container container;
-	@Enumerated
+	@Enumerated(EnumType.ORDINAL)
 	private MovimentType movimentType;
 
 	@JsonFormat(pattern = "dd/MM/yyy HH:mm:ss")

@@ -1,5 +1,6 @@
 package com.claudiocarige.CntrMovimentApi.repositories;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,4 +17,9 @@ public interface ContainerRepository extends JpaRepository<Container, Long> {
 
 	@Query("SELECT c FROM Container c WHERE c.categoryCntr = :category")
 	List<Container> findByCategory(@Param("category") CategoryCntr categoryCntr);
+	
+	@Query("SELECT cm.container FROM ContainerMoviment cm WHERE cm.container.categoryCntr = :category AND cm.initialDate BETWEEN :startDate AND :endDate")
+	List<Container> findContainersByCategoryAndDate(@Param("category") CategoryCntr category,
+			@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
+
 }
