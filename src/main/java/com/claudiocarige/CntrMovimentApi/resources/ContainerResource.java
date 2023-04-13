@@ -31,55 +31,56 @@ public class ContainerResource {
 
 	@Autowired
 	private ContainerService cntrService;
-	
+
 	@GetMapping
-	public ResponseEntity<List<ContainerDTO>> findAll(){
+	public ResponseEntity<List<ContainerDTO>> findAll() {
 		List<Container> list = cntrService.findAll();
 		List<ContainerDTO> listDTO = list.stream().map(x -> new ContainerDTO(x)).collect(Collectors.toList());
 		return ResponseEntity.ok().body(listDTO);
 	}
-	
+
 	@GetMapping(value = "/{id}")
-	public ResponseEntity<ContainerDTO> findById(@PathVariable Long id){
+	public ResponseEntity<ContainerDTO> findById(@PathVariable Long id) {
 		Container cntr = cntrService.findById(id);
-	    return ResponseEntity.ok().body(new ContainerDTO(cntr));
+		return ResponseEntity.ok().body(new ContainerDTO(cntr));
 	}
-	
+
 	@GetMapping(value = "/category/{id}")
-	public ResponseEntity<List<ContainerDTO>> findContainerByCategory(@PathVariable Integer id){
+	public ResponseEntity<List<ContainerDTO>> findContainerByCategory(@PathVariable Integer id) {
 		List<Container> cntrs = cntrService.findByCategory(id);
 		List<ContainerDTO> cntrsDTO = cntrs.stream().map(x -> new ContainerDTO(x)).collect(Collectors.toList());
 		return ResponseEntity.ok().body(cntrsDTO);
 	}
-	
-    @GetMapping("/category/{category}/dates") 
-    public ResponseEntity<List<ContainerDTO>> findContainersByCategoryAndDate(
-            @PathVariable("category") CategoryCntr category,
-            @RequestParam("start") @DateTimeFormat(pattern = "yyyy/MM/dd HH:mm:ss") LocalDateTime startDate,
-            @RequestParam("end") @DateTimeFormat(pattern = "yyyy/MM/dd HH:mm:ss") LocalDateTime endDate) {
-        List<Container> cntrs = cntrService.findContainersByCategoryAndDate(category, startDate, endDate);
-        List<ContainerDTO> cntrsDTO = cntrs.stream().map(x -> new ContainerDTO(x)).collect(Collectors.toList());
-        return ResponseEntity.ok().body(cntrsDTO);
-    }
-	@PostMapping
-	public ResponseEntity<ContainerDTO> insert(@Valid @RequestBody ContainerDTO cntrDTO){
-		cntrDTO = cntrService.formatCntr(cntrDTO);
-	 	Container newCntr = cntrService.insert(cntrDTO);
-		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/id").buildAndExpand(newCntr.getId()).toUri();
-	 	return ResponseEntity.created(uri).build();
+
+	@GetMapping("/category/{category}/dates")
+	public ResponseEntity<List<ContainerDTO>> findContainersByCategoryAndDate(
+			@PathVariable("category") String category,
+			@RequestParam("start") @DateTimeFormat(pattern = "yyyy/MM/dd HH:mm:ss") LocalDateTime startDate,
+			@RequestParam("end") @DateTimeFormat(pattern = "yyyy/MM/dd HH:mm:ss") LocalDateTime endDate) {
+		List<Container> cntrs = cntrService.findContainersByCategoryAndDate(CategoryCntr.valueOf(category.toUpperCase()), startDate, endDate);
+		List<ContainerDTO> cntrsDTO = cntrs.stream().map(x -> new ContainerDTO(x)).collect(Collectors.toList());
+		return ResponseEntity.ok().body(cntrsDTO);
 	}
-	
+
+	@PostMapping
+	public ResponseEntity<ContainerDTO> insert(@Valid @RequestBody ContainerDTO cntrDTO) {
+		cntrDTO = cntrService.formatCntr(cntrDTO);
+		Container newCntr = cntrService.insert(cntrDTO);
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/id").buildAndExpand(newCntr.getId()).toUri();
+		return ResponseEntity.created(uri).build();
+	}
+
 	@PutMapping(value = "/{id}")
-	public ResponseEntity<ContainerDTO> update(@PathVariable Long id, @Valid @RequestBody ContainerDTO cntrDTO){
+	public ResponseEntity<ContainerDTO> update(@PathVariable Long id, @Valid @RequestBody ContainerDTO cntrDTO) {
 		cntrDTO = cntrService.formatCntr(cntrDTO);
 		Container cntr = cntrService.update(cntrDTO, id);
 		return ResponseEntity.ok().body(new ContainerDTO(cntr));
 	}
-	
+
 	@PutMapping(value = "/updateclient/{id}")
-	public ResponseEntity<ContainerDTO> UpdateClient(@PathVariable Long id, @Valid @RequestBody ContainerDTO cntrDTO){
+	public ResponseEntity<ContainerDTO> UpdateClient(@PathVariable Long id, @Valid @RequestBody ContainerDTO cntrDTO) {
 		cntrDTO = cntrService.formatCntr(cntrDTO);
 		Container cntr = cntrService.updateClientCntr(id, cntrDTO);
 		return ResponseEntity.ok().body(new ContainerDTO(cntr));
 	}
- }
+}

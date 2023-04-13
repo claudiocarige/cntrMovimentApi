@@ -25,7 +25,7 @@ public class Client implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
- 
+
 	private String name;
 	@CNPJ(message = "Este não é um CNPJ válido!")
 	@Column(unique = true, length = 14)
