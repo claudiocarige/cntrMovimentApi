@@ -1,12 +1,14 @@
 package com.claudiocarige.CntrMovimentApi.resources;
 
 import java.net.URI;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,11 +16,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.claudiocarige.CntrMovimentApi.domain.Container;
 import com.claudiocarige.CntrMovimentApi.domain.dtos.ContainerDTO;
+import com.claudiocarige.CntrMovimentApi.domain.enums.CategoryCntr;
 import com.claudiocarige.CntrMovimentApi.services.ContainerService;
 
 @RestController
@@ -41,6 +45,22 @@ public class ContainerResource {
 	    return ResponseEntity.ok().body(new ContainerDTO(cntr));
 	}
 	
+	@GetMapping(value = "/category/{id}")
+	public ResponseEntity<List<ContainerDTO>> findContainerByCategory(@PathVariable Integer id){
+		List<Container> cntrs = cntrService.findByCategory(id);
+		List<ContainerDTO> cntrsDTO = cntrs.stream().map(x -> new ContainerDTO(x)).collect(Collectors.toList());
+		return ResponseEntity.ok().body(cntrsDTO);
+	}
+	
+    @GetMapping("/category/{category}/dates") 
+    public ResponseEntity<List<ContainerDTO>> findContainersByCategoryAndDate(
+            @PathVariable("category") CategoryCntr category,
+            @RequestParam("start") @DateTimeFormat(pattern = "yyyy/MM/dd HH:mm:ss") LocalDateTime startDate,
+            @RequestParam("end") @DateTimeFormat(pattern = "yyyy/MM/dd HH:mm:ss") LocalDateTime endDate) {
+        List<Container> cntrs = cntrService.findContainersByCategoryAndDate(category, startDate, endDate);
+        List<ContainerDTO> cntrsDTO = cntrs.stream().map(x -> new ContainerDTO(x)).collect(Collectors.toList());
+        return ResponseEntity.ok().body(cntrsDTO);
+    }
 	@PostMapping
 	public ResponseEntity<ContainerDTO> insert(@Valid @RequestBody ContainerDTO cntrDTO){
 		cntrDTO = cntrService.formatCntr(cntrDTO);

@@ -1,5 +1,6 @@
 package com.claudiocarige.CntrMovimentApi.services;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.claudiocarige.CntrMovimentApi.domain.ContainerMoviment;
 import com.claudiocarige.CntrMovimentApi.domain.dtos.ContainerDTO;
 import com.claudiocarige.CntrMovimentApi.domain.dtos.ContainerMovimentDTO;
+import com.claudiocarige.CntrMovimentApi.domain.enums.MovimentType;
 import com.claudiocarige.CntrMovimentApi.repositories.ContainerMovimentRepository;
 import com.claudiocarige.CntrMovimentApi.services.exception.DataIntegrityViolationException;
 import com.claudiocarige.CntrMovimentApi.services.exception.NoSuchElementException;
@@ -43,16 +45,16 @@ public class ContainerMovimentService {
 		if (!cntrMoveDTO.getContainer().getCntrNumber().equals(oldCntrMove.getContainer().getCntrNumber())
 				&& !cntrMoveDTO.getContainer().getClient().getCnpj()
 						.equals(oldCntrMove.getContainer().getClient().getCnpj())) {
-
+ 
 			throw new DataIntegrityViolationException(
 					"O numero do Container e/ou o CNPJ do cliente não podem ser Alterados");
 		}
+		oldCntrMove = transformDTO(cntrMoveDTO);
 		oldCntrMove.setContainer(cntrService.updateClientCntr(cntrMoveDTO.getContainer().getId(),
 				new ContainerDTO(cntrMoveDTO.getContainer())));
-		oldCntrMove = transformDTO(cntrMoveDTO);
 		return cntrMoveRepository.save(oldCntrMove);
-	}
-
+	} 
+ 
 	public ContainerMoviment transformDTO(ContainerMovimentDTO cntrMoveDTO) {
 		ContainerMoviment cntr = new ContainerMoviment();
 		cntr.setId(cntrMoveDTO.getId());

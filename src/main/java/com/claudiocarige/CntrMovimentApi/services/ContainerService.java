@@ -1,5 +1,6 @@
 package com.claudiocarige.CntrMovimentApi.services;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.claudiocarige.CntrMovimentApi.domain.Client;
 import com.claudiocarige.CntrMovimentApi.domain.Container;
 import com.claudiocarige.CntrMovimentApi.domain.dtos.ContainerDTO;
+import com.claudiocarige.CntrMovimentApi.domain.enums.CategoryCntr;
 import com.claudiocarige.CntrMovimentApi.repositories.ClientRepository;
 import com.claudiocarige.CntrMovimentApi.repositories.ContainerRepository;
 import com.claudiocarige.CntrMovimentApi.services.exception.DataIntegrityViolationException;
@@ -60,6 +62,15 @@ public class ContainerService {
 		Container cntr = transformDTO(cntrDTO);
 		return cntrRepository.save(cntr);
 	}
+	
+	public List<Container> findByCategory(Integer id) {
+		CategoryCntr category =  CategoryCntr.toEnum(id);
+		return cntrRepository.findByCategory(category);
+	}
+	
+    public List<Container> findContainersByCategoryAndDate(CategoryCntr category, LocalDateTime startDate, LocalDateTime endDate) {
+        return cntrRepository.findContainersByCategoryAndDate(category, startDate, endDate);
+    }
 
 	public void validateCntr(ContainerDTO cntrDTO) {
 		Optional<Container> oldCntr = cntrRepository.findById(cntrDTO.getId());
