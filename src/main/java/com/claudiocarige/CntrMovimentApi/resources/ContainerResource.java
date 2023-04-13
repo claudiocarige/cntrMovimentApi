@@ -41,6 +41,13 @@ public class ContainerResource {
 	    return ResponseEntity.ok().body(new ContainerDTO(cntr));
 	}
 	
+	@GetMapping(value = "/category/{id}")
+	public ResponseEntity<List<ContainerDTO>> findByContainerImport(@PathVariable Integer id){
+		List<Container> cntrs = cntrService.findByCategory(id);
+		List<ContainerDTO> cntrsDTO = cntrs.stream().map(x -> new ContainerDTO(x)).collect(Collectors.toList());
+		return ResponseEntity.ok().body(cntrsDTO);
+	}
+	
 	@PostMapping
 	public ResponseEntity<ContainerDTO> insert(@Valid @RequestBody ContainerDTO cntrDTO){
 		cntrDTO = cntrService.formatCntr(cntrDTO);
