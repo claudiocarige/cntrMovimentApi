@@ -7,10 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.claudiocarige.CntrMovimentApi.domain.Client;
 import com.claudiocarige.CntrMovimentApi.domain.Container;
 import com.claudiocarige.CntrMovimentApi.domain.ContainerMoviment;
+import com.claudiocarige.CntrMovimentApi.domain.Users;
 import com.claudiocarige.CntrMovimentApi.domain.enums.CategoryCntr;
 import com.claudiocarige.CntrMovimentApi.domain.enums.MovimentType;
 import com.claudiocarige.CntrMovimentApi.domain.enums.StatusCntr;
@@ -18,6 +20,7 @@ import com.claudiocarige.CntrMovimentApi.domain.enums.TypeCntr;
 import com.claudiocarige.CntrMovimentApi.repositories.ClientRepository;
 import com.claudiocarige.CntrMovimentApi.repositories.ContainerMovimentRepository;
 import com.claudiocarige.CntrMovimentApi.repositories.ContainerRepository;
+import com.claudiocarige.CntrMovimentApi.repositories.UsersReporitory;
 
 @Configuration
 @Profile("test")
@@ -31,6 +34,12 @@ public class TestConfig implements CommandLineRunner{
 	
 	@Autowired
 	private ContainerMovimentRepository cntrMoveRepository;
+	
+	@Autowired
+	private UsersReporitory usersReporitory;
+	
+	@Autowired
+	private PasswordEncoder encoder;
 	
 	@Override
 	public void run(String... args) throws Exception {
@@ -47,11 +56,12 @@ public class TestConfig implements CommandLineRunner{
 		ContainerMoviment cntrMove01 = new ContainerMoviment(null, cntr01, MovimentType.ARRIVAL, LocalDateTime.now(),null);
 		ContainerMoviment cntrMove02 = new ContainerMoviment(null, cntr02, MovimentType.GATEIN, LocalDateTime.now(), null);
 
+		Users users = new Users(null,"claudio", encoder.encode("123456"), true);
 
 		clientRepository.saveAll(Arrays.asList(client, client01, client02, client03));
 		cntrRepository.saveAll(Arrays.asList(cntr01, cntr02, cntr03));
 		cntrMoveRepository.saveAll(Arrays.asList(cntrMove01, cntrMove02));
-
+		usersReporitory.save(users);
 	}
 
 }
