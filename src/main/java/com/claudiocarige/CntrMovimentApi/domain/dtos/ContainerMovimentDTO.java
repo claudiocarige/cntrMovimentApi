@@ -2,6 +2,8 @@ package com.claudiocarige.CntrMovimentApi.domain.dtos;
 
 import java.time.LocalDateTime;
 
+import javax.validation.constraints.NotBlank;
+
 import com.claudiocarige.CntrMovimentApi.domain.Container;
 import com.claudiocarige.CntrMovimentApi.domain.ContainerMoviment;
 import com.claudiocarige.CntrMovimentApi.domain.enums.MovimentType;
@@ -11,6 +13,7 @@ public class ContainerMovimentDTO {
 
 	private Long id;
 	private Container container;
+	@NotBlank(message = "O campo MovimentType não pode ser vazio ou nulo")
 	private MovimentType movimentType;
 	@JsonFormat(pattern = "dd/MM/yyy HH:mm:ss")
 	private LocalDateTime initialDate;
