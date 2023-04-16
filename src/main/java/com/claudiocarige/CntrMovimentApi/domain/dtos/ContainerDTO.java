@@ -3,7 +3,6 @@ package com.claudiocarige.CntrMovimentApi.domain.dtos;
 import java.io.Serializable;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 import com.claudiocarige.CntrMovimentApi.domain.Client;
@@ -16,13 +15,13 @@ public class ContainerDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private Long id;
-	@NotBlank(message = "O numero do CNTR não pode ser nem vazio, nem nulo!")
+	@NotBlank(message = "O numero do CNTR não pode ser vazio ou nulo!")
 	private String cntrNumber;
-	@NotNull(message = "O campo STATUS é requerido")
+	@NotBlank(message = "O campo STATUS não pode ser vazio ou nulo")
 	private StatusCntr statusCntr;
-	@NotNull(message = "O campo TIPO é requerido")
+	@NotBlank(message = "O campo TIPO não pode ser vazio ou nulo")
 	private TypeCntr typeCntr;
-	@NotNull(message = "O campo CATEGORIA é requerido")
+	@NotBlank(message = "O campo CATEGORIA não pode ser vazio ou nulo")
 	private CategoryCntr categoryCntr;
 	@NotNull(message = "O campo CLIENTE é requerido")
 	private Client client;
