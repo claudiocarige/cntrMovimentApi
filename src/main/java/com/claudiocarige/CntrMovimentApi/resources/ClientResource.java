@@ -22,6 +22,10 @@ import com.claudiocarige.CntrMovimentApi.domain.dtos.ClientDTO;
 import com.claudiocarige.CntrMovimentApi.services.ClientService;
 import com.claudiocarige.CntrMovimentApi.services.exception.DataIntegrityViolationException;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+
+@Api(value = "Movimentação de Container API REST")
 @RestController
 @RequestMapping(value = "/api/clients")
 public class ClientResource {
@@ -29,6 +33,7 @@ public class ClientResource {
 	@Autowired
 	private ClientService clientService;
 
+	@ApiOperation(produces= "Aceita entrada Json", nickname= "Gera saída JSON",value = "Retorna uma lista de todos os clientes")
 	@GetMapping
 	public ResponseEntity<List<ClientDTO>> findall() {
 		List<Client> list = clientService.findAll();
@@ -36,12 +41,13 @@ public class ClientResource {
 		return ResponseEntity.ok().body(listDTO);
 	}
 
+	@ApiOperation(produces= "Aceita entrada Json", nickname= "Gera saída JSON",value = "Retorna um cliente especifico")
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<ClientDTO> findById(@PathVariable Long id) {
 		Client client = clientService.findById(id);
 		return ResponseEntity.ok().body(new ClientDTO(client));
 	}
-
+	@ApiOperation(produces= "Aceita entrada Json", nickname= "Gera saída JSON",value = "Insere um novo cliente.")
 	@PostMapping
 	public ResponseEntity<ClientDTO> insert(@Valid @RequestBody ClientDTO clientDTO) {
 		clientDTO = formatCnpj(clientDTO);
@@ -49,7 +55,8 @@ public class ClientResource {
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/id").buildAndExpand(client.getId()).toUri();
 		return ResponseEntity.created(uri).build();
 	}
-
+	
+	@ApiOperation(produces= "Aceita entrada Json", nickname= "Gera saída JSON",value = "Atualiza um cliente.")
 	@PutMapping(value = "/{id}")
 	public ResponseEntity<ClientDTO> update(@PathVariable Long id, @RequestBody ClientDTO clientDTO) {
 		clientDTO = formatCnpj(clientDTO);

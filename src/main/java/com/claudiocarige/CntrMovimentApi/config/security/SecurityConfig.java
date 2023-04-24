@@ -4,28 +4,41 @@ import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import com.claudiocarige.CntrMovimentApi.services.UserDetailsServiceImpl;
+import com.claudiocarige.CntrMovimentApi.security.JWTAuthenticationFilter;
+import com.claudiocarige.CntrMovimentApi.security.JWTAuthorizationFilter;
+import com.claudiocarige.CntrMovimentApi.security.JWTUtil;
 
+
+@Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-	@Autowired
-	private Environment env;
+	private static final String[] PUBLIC_MATCHERS = {"/h2-console/**"};
 	
 	@Autowired
-	private UserDetailsServiceImpl userDetail;
+	private Environment env;
 
 	@Autowired
-	private AppConfig appConfig;
+	private JWTUtil jwtUtil;
+
+	@Autowired
+	private UserDetailsService userDetailsService;
 	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
@@ -35,33 +48,55 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		http
 			.cors()
 			.and()
-			.csrf()
-			.disable()
+			.csrf().disable();
+		http.addFilter(new JWTAuthenticationFilter(authenticationManager(), jwtUtil));
+		http.addFilter(new JWTAuthorizationFilter(authenticationManager(), jwtUtil, userDetailsService));
+		http
+			.authorizeRequests()
+			.antMatchers(PUBLIC_MATCHERS).permitAll()
+			.anyRequest().authenticated();
+		http
 			.authorizeHttpRequests()
-				.antMatchers("/api/clients/**")
-					.hasAnyRole("USER", "ADMIN")
-				.antMatchers("/api/cntr")
-					.hasAnyRole("USER", "ADMIN")
-				.antMatchers("/api/cntrmoviment")
-					.hasAnyRole("ADMIN")
-			.and()
-			.httpBasic();
-	}
+			.antMatchers("/v2/api-docs",
+				"/configuration/ui",
+				"/swagger-resources/**",
+				"/configuration/security",
+				"/swagger-ui.html",
+				"/webjars/**")
+			.permitAll();
+		http
+		.sessionManagement()
+		.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+	}						    
 
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		auth
-			.userDetailsService(userDetail)
-			.passwordEncoder(appConfig.passwordEncoder());
-	}
-
+			.userDetailsService(userDetailsService)
+			.passwordEncoder(bCryptPasswordEncoder());
+	}	
+	 
 	@Bean
-	public CorsConfigurationSource corsConfigurationSource() {
+	CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration configuration = new CorsConfiguration().applyPermitDefaultValues();
 		configuration.setAllowedMethods(Arrays.asList("POST", "GET", "PUT", "DELETE", "OPTIONS"));
-		configuration.addExposedHeader("Authorization");
 		final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		source.registerCorsConfiguration("/**", configuration);
 		return source;
 	}
-}
+
+	@Override
+	public void configure(WebSecurity web) throws Exception {
+		web.ignoring().antMatchers("/v2/api-docs",
+				"/configuration/ui",
+				"/swagger-resources/**",
+				"/configuration/security",
+				"/swagger-ui.html",
+				"/webjars/**");
+	}
+	
+	@Bean
+	public BCryptPasswordEncoder bCryptPasswordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
+} 

@@ -3,7 +3,6 @@ package com.claudiocarige.CntrMovimentApi.domain.dtos;
 import java.io.Serializable;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 import com.claudiocarige.CntrMovimentApi.domain.Client;
 

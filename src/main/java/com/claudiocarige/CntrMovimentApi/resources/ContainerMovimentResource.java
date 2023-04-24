@@ -24,46 +24,53 @@ import com.claudiocarige.CntrMovimentApi.domain.dtos.ContainerMovimentDTO;
 import com.claudiocarige.CntrMovimentApi.services.ContainerMovimentService;
 import com.claudiocarige.CntrMovimentApi.services.ContainerService;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+
+@Api(value = "Movimentação de Container API REST")
 @RestController
 @RequestMapping(value = "/api/cntrmoviment")
 public class ContainerMovimentResource {
 
 	@Autowired
 	private ContainerMovimentService cntrMoveService;
-	
+
 	@Autowired
 	private ContainerService cntrService;
-	
+
+	@ApiOperation(produces = "Aceita entrada Json", nickname = "Gera saída JSON", value = "Retorna uma Lista todas as movimentações de Containers")
 	@GetMapping
-	public ResponseEntity<List<ContainerMovimentDTO>> findAll(){
+	public ResponseEntity<List<ContainerMovimentDTO>> findAll() {
 		List<ContainerMoviment> list = cntrMoveService.findAll();
-		List<ContainerMovimentDTO> cntrMoveDTO = list.stream().
-										map(obj -> new ContainerMovimentDTO(obj))
-										.collect(Collectors.toList());
+		List<ContainerMovimentDTO> cntrMoveDTO = list.stream().map(obj -> new ContainerMovimentDTO(obj))
+				.collect(Collectors.toList());
 		return ResponseEntity.ok().body(cntrMoveDTO);
 	}
-	
+
+	@ApiOperation(produces= "Aceita entrada Json", nickname= "Gera saída JSON",value = "Retorna uma movimentação específica")
 	@GetMapping(value = "/{id}")
-	public ResponseEntity<ContainerMovimentDTO> findById(@PathVariable Long id){		
+	public ResponseEntity<ContainerMovimentDTO> findById(@PathVariable Long id) {
 		ContainerMoviment cntr = cntrMoveService.findById(id);
 		return ResponseEntity.ok().body(new ContainerMovimentDTO(cntr));
-	
+
 	}
-	
+
+	@ApiOperation(produces = "Aceita entrada Json", nickname = "Gera saída JSON", value = "Insere uma nova Movimentação de Container.")
 	@PostMapping
-	public ResponseEntity<ContainerMovimentDTO> insert(@Valid @RequestBody ContainerMovimentDTO cntrMoveDTO){
+	public ResponseEntity<ContainerMovimentDTO> insert(@Valid @RequestBody ContainerMovimentDTO cntrMoveDTO) {
 		ContainerMoviment cntr = cntrMoveService.insert(cntrMoveDTO);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/id").buildAndExpand(cntr.getId()).toUri();
 		return ResponseEntity.created(uri).build();
 	}
-	
+
+	@ApiOperation(produces= "Aceita entrada Json", nickname= "Gera saída JSON",value = "Atualiza uma nova Movimentação de Container.")
 	@PutMapping(value = "/{id}")
-	public ResponseEntity<ContainerMovimentDTO> update(@PathVariable Long id, @Valid @RequestBody ContainerMovimentDTO cntrMoveDTO){
-		Container cntr = cntrMoveDTO.getContainer(); 
+	public ResponseEntity<ContainerMovimentDTO> update(@PathVariable Long id,
+			@Valid @RequestBody ContainerMovimentDTO cntrMoveDTO) {
+		Container cntr = cntrMoveDTO.getContainer();
 		cntrMoveDTO.setContainer(cntrService.transformDTO(cntrService.formatCntr(new ContainerDTO(cntr))));
 		ContainerMoviment cntrMove = cntrMoveService.update(id, cntrMoveDTO);
 		return ResponseEntity.ok().body(new ContainerMovimentDTO(cntrMove));
 	}
-	
-	
+
 }

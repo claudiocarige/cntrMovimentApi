@@ -1,39 +1,22 @@
 package com.claudiocarige.CntrMovimentApi.domain.dtos;
 
-import java.util.UUID;
-
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 import com.claudiocarige.CntrMovimentApi.domain.Users;
 
 public class UsersDTO {
 
-	private UUID id;
 	@NotBlank(message = "O campo USERNAME não pode ser vazio ou nulo")
 	private String username;
 	@NotBlank(message = "O campo PASSWORD não pode ser vazio ou nulo")
 	private String password;
-	@NotNull(message = "A Role é requerida!")
-	private Boolean admin;
 
 	public UsersDTO() {
 	}
 
 	public UsersDTO(Users users) {
-		super();
-		this.id = users.getId();
 		this.username = users.getUsername();
 		this.password = users.getPassword();
-		this.admin = users.getAdmin();
-	}
-
-	public UUID getId() {
-		return id;
-	}
-
-	public void setId(UUID id) {
-		this.id = id;
 	}
 
 	public String getUsername() {
@@ -50,14 +33,6 @@ public class UsersDTO {
 
 	public void setPassword(String password) {
 		this.password = password;
-	}
-
-	public Boolean getAdmin() {
-		return admin;
-	}
-
-	public void setAdmin(Boolean admin) {
-		this.admin = admin;
 	}
 
 }
