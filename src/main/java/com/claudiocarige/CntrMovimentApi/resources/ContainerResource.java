@@ -25,6 +25,10 @@ import com.claudiocarige.CntrMovimentApi.domain.dtos.ContainerDTO;
 import com.claudiocarige.CntrMovimentApi.domain.enums.CategoryCntr;
 import com.claudiocarige.CntrMovimentApi.services.ContainerService;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+
+@Api(value = "Movimentação de Container API REST")
 @RestController
 @RequestMapping(value = "/api/cntr")
 public class ContainerResource {
@@ -32,19 +36,22 @@ public class ContainerResource {
 	@Autowired
 	private ContainerService cntrService;
 
+	@ApiOperation(produces = "Gera saída JSON", value = "Retorna uma Lista todos os Containers")
 	@GetMapping
 	public ResponseEntity<List<ContainerDTO>> findAll() {
 		List<Container> list = cntrService.findAll();
 		List<ContainerDTO> listDTO = list.stream().map(x -> new ContainerDTO(x)).collect(Collectors.toList());
 		return ResponseEntity.ok().body(listDTO);
 	}
-
+	
+	@ApiOperation(produces = "Gera saída JSON", value = "Retorna um Container específico")
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<ContainerDTO> findById(@PathVariable Long id) {
 		Container cntr = cntrService.findById(id);
 		return ResponseEntity.ok().body(new ContainerDTO(cntr));
 	}
 
+	@ApiOperation(produces = "Gera saída JSON", value = "Retorna um Container por sua categoria")
 	@GetMapping(value = "/category/{id}")
 	public ResponseEntity<List<ContainerDTO>> findContainerByCategory(@PathVariable Integer id) {
 		List<Container> cntrs = cntrService.findByCategory(id);
@@ -52,6 +59,7 @@ public class ContainerResource {
 		return ResponseEntity.ok().body(cntrsDTO);
 	}
 
+	@ApiOperation(produces = "Gera saída JSON", value = "Retorna um Container por sua categoria e um intervalo de datas")
 	@GetMapping("/category/{category}/dates")
 	public ResponseEntity<List<ContainerDTO>> findContainersByCategoryAndDate(
 			@PathVariable("category") String category,
@@ -62,6 +70,7 @@ public class ContainerResource {
 		return ResponseEntity.ok().body(cntrsDTO);
 	}
 
+	@ApiOperation(produces = "Aceita entrada Json", value = "Insere um novo Container")
 	@PostMapping
 	public ResponseEntity<ContainerDTO> insert(@Valid @RequestBody ContainerDTO cntrDTO) {
 		cntrDTO = cntrService.formatCntr(cntrDTO);
@@ -70,6 +79,7 @@ public class ContainerResource {
 		return ResponseEntity.created(uri).build();
 	}
 
+	@ApiOperation(produces = "Aceita entrada Json",  value = "Atualiza um Container")
 	@PutMapping(value = "/{id}")
 	public ResponseEntity<ContainerDTO> update(@PathVariable Long id, @Valid @RequestBody ContainerDTO cntrDTO) {
 		cntrDTO = cntrService.formatCntr(cntrDTO);
@@ -77,6 +87,7 @@ public class ContainerResource {
 		return ResponseEntity.ok().body(new ContainerDTO(cntr));
 	}
 
+	@ApiOperation(produces = "Aceita entrada Json", value = "Atualiza um Cliente de um Container.")
 	@PutMapping(value = "/updateclient/{id}")
 	public ResponseEntity<ContainerDTO> UpdateClient(@PathVariable Long id, @Valid @RequestBody ContainerDTO cntrDTO) {
 		cntrDTO = cntrService.formatCntr(cntrDTO);
