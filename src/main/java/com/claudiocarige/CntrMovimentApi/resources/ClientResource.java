@@ -41,7 +41,7 @@ public class ClientResource {
 		Client client = clientService.findById(id);
 		return ResponseEntity.ok().body(new ClientDTO(client));
 	}
-
+	
 	@PostMapping
 	public ResponseEntity<ClientDTO> insert(@Valid @RequestBody ClientDTO clientDTO) {
 		clientDTO = formatCnpj(clientDTO);
@@ -49,7 +49,7 @@ public class ClientResource {
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/id").buildAndExpand(client.getId()).toUri();
 		return ResponseEntity.created(uri).build();
 	}
-
+	
 	@PutMapping(value = "/{id}")
 	public ResponseEntity<ClientDTO> update(@PathVariable Long id, @RequestBody ClientDTO clientDTO) {
 		clientDTO = formatCnpj(clientDTO);

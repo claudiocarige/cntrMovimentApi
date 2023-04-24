@@ -1,14 +1,22 @@
 package com.claudiocarige.CntrMovimentApi.domain;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import com.claudiocarige.CntrMovimentApi.domain.enums.Perfil;
 
 @Entity
 @Table(name = "tb_users")
@@ -23,18 +31,19 @@ public class Users implements Serializable {
 	private String username;
 	@Column(nullable = false)
 	private String password;
-	@Column(nullable = false,length = 6)
-	private Boolean admin;
-
+	@ElementCollection(fetch = FetchType.EAGER)
+	@CollectionTable(name = "PERFIL")
+	private Set<Integer> perfis = new HashSet<>();
+	
 	public Users() {
 	}
-
-	public Users(UUID id, String username, String password, Boolean admin) {
+ 
+	public Users(UUID id, String username, String password, Perfil perfil) {
 		super();
 		this.id = id;
 		this.username = username;
 		this.password = password;
-		this.admin = admin;
+		addPerfis(perfil);
 	}
 
 	public UUID getId() {
@@ -61,12 +70,12 @@ public class Users implements Serializable {
 		this.password = password;
 	}
 
-	public Boolean getAdmin() {
-		return admin;
+	public Set<Perfil> getPerfis() {
+		return perfis.stream().map(x -> Perfil.toEnum(x)).collect(Collectors.toSet());
 	}
 
-	public void setAdmin(Boolean admin) {
-		this.admin = admin;
+	public void addPerfis(Perfil perfis) {
+		this.perfis.add(perfis.getCode());
 	}
 
 }
